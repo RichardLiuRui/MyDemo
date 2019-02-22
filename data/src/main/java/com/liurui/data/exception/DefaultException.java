@@ -1,8 +1,5 @@
 package com.liurui.data.exception;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.liurui.data.DefaultResponse;
 
 import java.io.IOException;
@@ -15,32 +12,32 @@ import retrofit2.Response;
 
 public class DefaultException extends RuntimeException {
 
-    public static Exception httpError(@NonNull final String psUrl, @NonNull final Response poResponse) {
+    public static Exception httpError(final String psUrl, final Response poResponse) {
         final String lsMessage = poResponse.code() + " " + poResponse.message();
-        return new DefaultException(lsMessage, psUrl, Kind.HTTP, null,null,poResponse.code());
+        return new DefaultException(lsMessage, psUrl, Kind.HTTP, null, null, poResponse.code());
     }
 
-    public static DefaultException httpError(@NonNull final String psUrl, @NonNull final String msg,@NonNull final int code) {
-        return new DefaultException(msg, psUrl, Kind.HTTP, null,null,code);
-    }
-
-
-    public static DefaultException networkError(@NonNull final IOException poException) {
-        return new DefaultException(poException.getMessage(), null,  Kind.NETWORK, null,poException, DefaultResponse.CODE_ERROR);
-    }
-
-    public static DefaultException networkError(@NonNull final String errorMsg) {
-        return new DefaultException(errorMsg, null, Kind.NETWORK, null,null, DefaultResponse.CODE_ERROR);
+    public static DefaultException httpError(final String psUrl, final String msg, final int code) {
+        return new DefaultException(msg, psUrl, Kind.HTTP, null, null, code);
     }
 
 
-    public static DefaultException serverResponseError(@NonNull final DefaultResponse response) {
-        return new DefaultException(response.getErrorMsg(), null, Kind.SERVER, response,null, response.getErrorCode());
+    public static DefaultException networkError(final IOException poException) {
+        return new DefaultException(poException.getMessage(), null, Kind.NETWORK, null, poException, DefaultResponse.CODE_ERROR);
+    }
+
+    public static DefaultException networkError(final String errorMsg) {
+        return new DefaultException(errorMsg, null, Kind.NETWORK, null, null, DefaultResponse.CODE_ERROR);
     }
 
 
-    public static DefaultException unexpectedError(@NonNull final Throwable poException) {
-        return new DefaultException(poException.getMessage(), null, Kind.UNEXPECTED, null,poException,Integer.MAX_VALUE);
+    public static DefaultException serverResponseError(final DefaultResponse response) {
+        return new DefaultException(response.getErrorMsg(), null, Kind.SERVER, response, null, response.getErrorCode());
+    }
+
+
+    public static DefaultException unexpectedError(final Throwable poException) {
+        return new DefaultException(poException.getMessage(), null, Kind.UNEXPECTED, null, poException, Integer.MAX_VALUE);
     }
 
     /**
@@ -74,12 +71,12 @@ public class DefaultException extends RuntimeException {
     private final int errorCode;
     private final DefaultResponse response;
 
-    DefaultException(@NonNull final String psMessage,
-                     @Nullable final String psUrl,
-                     @NonNull final Kind poKind,
-                     @Nullable final DefaultResponse response,
-                     @Nullable final Throwable poException,
-                     @Nullable final int errCode) {
+    DefaultException(final String psMessage,
+                     final String psUrl,
+                     final Kind poKind,
+                     final DefaultResponse response,
+                     final Throwable poException,
+                     final int errCode) {
         super(psMessage, poException);
         mUrl = psUrl;
         mKind = poKind;
@@ -103,7 +100,6 @@ public class DefaultException extends RuntimeException {
     public int getErrorCode() {
         return errorCode;
     }
-
 
 
     public static final int ERROR_CODE_NEED_LOGIN = 2;

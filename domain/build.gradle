@@ -37,6 +37,6 @@ android {
 
 dependencies {
     def domainDependencies = rootProject.ext.domainDependencies
-    compile domainDependencies.rxJava
-    compile domainDependencies.rxandroid
+    implementation domainDependencies.rxJava
+    implementation domainDependencies.rxandroid
 }

@@ -6,6 +6,7 @@ import com.liurui.data.api.Api;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -14,7 +15,9 @@ import javax.net.ssl.SSLSession;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -77,6 +80,16 @@ public abstract class AbstractRetrofitDataSource {
                     }
                 })
                 .build();
+    }
+
+    public RequestBody createRequestBody(Map<String,Object> map){
+        String json = GsonUtil.toGson(map);//要传递的json
+        return RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),json);
+    }
+
+    //创建表单的普通字段
+    public static RequestBody createFormBody(String content) {
+        return RequestBody.create(MediaType.parse("multipart/form-data"), content);
     }
 
     abstract String getApiUrl();

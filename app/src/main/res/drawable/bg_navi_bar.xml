@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape>
+            <gradient
+                android:angle="0"
+                android:endColor="@color/navi_bar_end_color"
+                android:startColor="@color/navi_bar_start_color"
+                android:type="linear"/>
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape>
+            <gradient
+                android:angle="0"
+                android:endColor="@color/navi_bar_end_color"
+                android:startColor="@color/navi_bar_start_color"
+                android:type="linear"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <gradient
+                android:angle="0"
+                android:endColor="@color/navi_bar_end_color"
+                android:startColor="@color/navi_bar_start_color"
+                android:type="linear"/>
+        </shape>
+    </item>
+
+</selector>

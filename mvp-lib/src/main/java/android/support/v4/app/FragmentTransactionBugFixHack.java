@@ -13,9 +13,9 @@ public class FragmentTransactionBugFixHack {
         if (!(fragmentManager instanceof FragmentManagerImpl))
             return;
         FragmentManagerImpl fragmentManagerImpl = (FragmentManagerImpl) fragmentManager;
-        if (fragmentManagerImpl.mAvailIndices != null && fragmentManagerImpl.mAvailIndices.size() > 1) {
+        if (fragmentManagerImpl.mAvailBackStackIndices != null && fragmentManagerImpl.mAvailBackStackIndices.size() > 1) {
 //            System.out.println("排序前-->" + fragmentManagerImpl.mAvailIndices);
-            Collections.sort(fragmentManagerImpl.mAvailIndices, Collections.reverseOrder());
+            Collections.sort(fragmentManagerImpl.mAvailBackStackIndices, Collections.reverseOrder());
 //            System.out.println("排序后-->" + fragmentManagerImpl.mAvailIndices);
         }
     }

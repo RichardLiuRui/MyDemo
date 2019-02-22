@@ -37,5 +37,5 @@ android {
 
 dependencies {
     def mvpLibDepenencies = rootProject.ext.mvpLibDependencies
-    compile mvpLibDepenencies.appcompat
+    implementation mvpLibDepenencies.appcompat
 }

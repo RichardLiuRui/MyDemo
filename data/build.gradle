@@ -36,14 +36,14 @@ android {
 }
 
 dependencies {
-    compile project(":common")
-    compile project(":domain")
+    implementation project(":common")
+    implementation project(":domain")
 
     def dataDependencies = rootProject.ext.dataDependencies
-    compile dataDependencies.okHttp
-    compile dataDependencies.okHttpLogging
-    compile dataDependencies.retrofit
-    compile dataDependencies.retrofitConverterGson
-    compile dataDependencies.retrofitAdapter
-    compile dataDependencies.gson
+    implementation dataDependencies.okHttp
+    implementation dataDependencies.okHttpLogging
+    implementation dataDependencies.retrofit
+    implementation dataDependencies.retrofitConverterGson
+    implementation dataDependencies.retrofitAdapter
+    implementation dataDependencies.gson
 }

@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+android {
+    def configuration = rootProject.ext
+
+    compileSdkVersion configuration.compileSdkVersion
+    buildToolsVersion configuration.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion configuration.minSdkVersion
+        targetSdkVersion configuration.targetSdkVersion
+        versionCode configuration.versionCode
+        versionName configuration.versionName
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //增加lint选项，不加的话下面上传到jCenter有可能会报错
+    lintOptions {
+        abortOnError false
+    }
+
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+
+}
+
+
+dependencies {
+    def appDependencies = rootProject.ext.appDependencies
+    api fileTree(dir: 'libs', include: '*.jar')
+    api appDependencies.recyclerview
+    api appDependencies.constraint_layout
+    api appDependencies.appcompat
+    api appDependencies.gson
+
+}

@@ -14,6 +14,8 @@ android {
         targetSdkVersion configuration.targetSdkVersion
         versionCode configuration.versionCode
         versionName configuration.versionName
+        flavorDimensions "versionCode"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -22,23 +24,110 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    productFlavors {
+        official {}
+        yingyongb {}
+    }
+
+//    有签名配置了以后再开放
+//    buildTypes {
+//        release {
+//            debuggable false
+//            jniDebuggable false
+//            minifyEnabled true
+//            zipAlignEnabled true
+//            shrinkResources true
+//            signingConfig signingConfigs.config
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            manifestPlaceholders = ["app_name":"立可加物流专员",
+//                                    "umeng_key":umeng_key]
+//
+//        }
+//        debug{
+//            debuggable true
+//            jniDebuggable true
+//            zipAlignEnabled true
+//            shrinkResources false
+//            minifyEnabled false
+//            signingConfig signingConfigs.config
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            manifestPlaceholders = ["app_name":"立可加物流专员测试版",
+//                                    "umeng_key":umeng_key]
+//
+//        }
+//
+//    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def relativeRootDir = output.packageApplication.outputDirectory.toPath()
+                    .relativize(rootDir.toPath()).toFile()
+            def outputFile = output.outputFile
+            def fileName
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                if (variant.buildType.name.equals('release')) {
+                    def buildName = ""
+                    variant.productFlavors.each { product ->
+                        buildName = product.name
+                    }
+
+                    if (buildName.equals("official")) {
+                        fileName = "noraExpress_${defaultConfig.versionName}.apk"
+                    } else {
+                        fileName = "noraExpress-${buildName}_${defaultConfig.versionName}.apk"
+                    }
+
+                    outputFileName = new File("$relativeRootDir/release" + "/v${defaultConfig.versionName}", fileName)
+
+                } else if (variant.buildType.name.equals('debug')) {
+                    fileName = "noraExpress_v${defaultConfig.versionName}_debug.apk"
+                    outputFileName = new File("$relativeRootDir/debug", fileName)
+
+                }
+            }
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':mvp-lib')
-    compile project(':data')
-    compile project(':domain')
-    compile project(':common')
+    annotationProcessor appDependencies.butterKnife_compile
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':mvp-lib')
+    implementation project(':data')
+    implementation project(':domain')
+    implementation project(':common')
+    implementation project(':pictureselector')
+    implementation project(':common-pull-to-refresh')
+    implementation project(':citypickerview')
+
     def appDependencies = rootProject.ext.appDependencies
-    compile appDependencies.kotlin
-    compile appDependencies.appcompat
-    compile appDependencies.constraint_layout
-    compile appDependencies.support_design
-    compile appDependencies.butterKnife
-    compile appDependencies.okHttp
-    compile appDependencies.okHttpLogging
-    compile appDependencies.eventBus
-    compile appDependencies.glide
-    compile appDependencies.glideOkhttpIntergration
+    implementation appDependencies.kotlin
+    implementation appDependencies.appcompat
+    implementation appDependencies.cardView
+    implementation appDependencies.constraint_layout
+    implementation appDependencies.recyclerview
+    implementation appDependencies.support_design
+    implementation appDependencies.butterKnife
+    implementation appDependencies.okHttp
+    implementation appDependencies.okHttpLogging
+    implementation appDependencies.eventBus
+    implementation appDependencies.glide
+    implementation appDependencies.glideOkhttpIntergration
+    implementation appDependencies.rxJava
+    implementation appDependencies.rxandroid
+    implementation appDependencies.anko_commons
+    implementation appDependencies.anko_appcompat
+    implementation appDependencies.gson
+    implementation appDependencies.html_text
+    implementation appDependencies.scale_image
+    implementation appDependencies.and_permission
+    implementation appDependencies.meizu_push
 }

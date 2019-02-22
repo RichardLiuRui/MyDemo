@@ -37,7 +37,7 @@ android {
 
 dependencies {
     def commonDependencies = rootProject.ext.commonDependencies;
-    compile commonDependencies.gson
-    compile commonDependencies.support_design
+    implementation commonDependencies.gson
+    implementation commonDependencies.support_design
 
 }

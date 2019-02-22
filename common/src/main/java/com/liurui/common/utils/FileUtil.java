@@ -1,10 +1,14 @@
 package com.liurui.common.utils;
 
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.liurui.common.assist.Check;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,12 +29,28 @@ import java.util.List;
 public class FileUtil {
     private static final String TAG = FileUtil.class.getSimpleName();
     public final static String FILE_EXTENSION_SEPARATOR = ".";
+    private static String pathDiv = "/";
+    public static File cacheDir = !isExternalStorageWritable() ? ApplicationUtil.getContext().getFilesDir() : ApplicationUtil.getContext().getExternalCacheDir();
+    public static final String IMG_DOWNLOAD_DIR = Environment.getExternalStorageDirectory().getPath() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "noraExpress";
+    public static final String APK_DOWNLOAD_DIR = Environment.getExternalStorageDirectory().getPath() + File.separator + "noraExpress";
+    public static final String IMG_SUFFIX = ".png";
 
     private FileUtil() {
         throw new AssertionError();
     }
 
 
+    /**
+     * 判断外部存储是否可用
+     */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        Log.e(TAG, "ExternalStorage not mounted");
+        return false;
+    }
 
 
     public static File getFile(File directory, String... names) {
@@ -108,7 +128,7 @@ public class FileUtil {
      *
      * @param filePath
      * @param content
-     * @param append is append, if true, write to the end of file, else clear content of file and write into it
+     * @param append   is append, if true, write to the end of file, else clear content of file and write into it
      * @return return false if content is empty, true otherwise
      * @throws RuntimeException if an error occurs while operator FileWriter
      */
@@ -135,7 +155,7 @@ public class FileUtil {
      *
      * @param filePath
      * @param contentList
-     * @param append is append, if true, write to the end of file, else clear content of file and write into it
+     * @param append      is append, if true, write to the end of file, else clear content of file and write into it
      * @return return false if contentList is empty, true otherwise
      * @throws RuntimeException if an error occurs while operator FileWriter
      */
@@ -224,7 +244,7 @@ public class FileUtil {
     /**
      * write file
      *
-     * @param file the file to be opened for writing.
+     * @param file   the file to be opened for writing.
      * @param stream the input stream
      * @param append if <code>true</code>, then bytes will be written to the end of the file rather than the beginning
      * @return return true
@@ -295,6 +315,20 @@ public class FileUtil {
             throw new RuntimeException("FileNotFoundException occurred. ", e);
         }
         return writeFile(destFilePath, inputStream);
+    }
+
+    public static boolean copyFile(String sourceFilePath, String filePath, String filename) {
+        File fileDir = new File(filePath);
+        if (!fileDir.exists()) {
+            fileDir.mkdir();
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(sourceFilePath);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("FileNotFoundException occurred. ", e);
+        }
+        return writeFile(filePath + File.separator + filename, inputStream);
     }
 
     /**
@@ -475,11 +509,11 @@ public class FileUtil {
      *
      * @param filePath
      * @return true if the necessary directories have been created or the target directory already exists, false one of
-     *         the directories can not be created.
-     *         <ul>
-     *         <li>if {@link FileUtil#getFolderName(String)} return null, return false</li>
-     *         <li>if target directory already exists, return true</li>
-     *         </ul>
+     * the directories can not be created.
+     * <ul>
+     * <li>if {@link FileUtil#getFolderName(String)} return null, return false</li>
+     * <li>if target directory already exists, return true</li>
+     * </ul>
      */
     public static boolean makeDirs(String filePath) {
         String folderName = getFolderName(filePath);
@@ -603,5 +637,83 @@ public class FileUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 将图片存储为文件
+     *
+     * @param bitmap 图片
+     */
+    public static String createFile(Bitmap bitmap, String filename) {
+        File f = new File(cacheDir, filename);
+        try {
+            if (f.createNewFile()) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                byte[] bitmapdata = bos.toByteArray();
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "create bitmap file error" + e);
+        }
+        if (f.exists()) {
+            return f.getAbsolutePath();
+        }
+        return null;
+    }
+
+    /**
+     * 将数据存储为文件
+     *
+     * @param data 数据
+     */
+    public static void createFile(byte[] data, String filePath, String filename) {
+        File fileDir = new File(filePath);
+        if (!fileDir.exists()) {
+            fileDir.mkdir();
+        }
+        File f = new File(filePath, filename);
+        try {
+            if (f.createNewFile()) {
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(data);
+                fos.flush();
+                fos.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "create file error" + e);
+        }
+    }
+
+    /**
+     * 获取缓存文件地址
+     */
+    public static String getCacheFilePath(String fileName) {
+        return cacheDir.getAbsolutePath() + pathDiv + fileName;
+    }
+
+    /**
+     * 创建临时文件
+     *
+     * @param type 文件类型
+     */
+    public static File getTempFile(FileType type) {
+        try {
+            File file = File.createTempFile(type.toString(), null, cacheDir);
+            file.deleteOnExit();
+            return file;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public enum FileType {
+        IMG,
+        AUDIO,
+        VIDEO,
+        FILE,
     }
 }

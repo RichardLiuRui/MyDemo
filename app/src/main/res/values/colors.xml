@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="trans">#00000000</color>
+    <color name="navigation_bar_backgroud_color">#ffffff</color>
+    <color name="navi_bar_start_color">#CC0033</color>
+    <color name="navi_bar_end_color">#D9045B</color>
 </resources>
